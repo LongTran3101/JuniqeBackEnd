@@ -4,12 +4,14 @@ import jakarta.validation.Valid;
 import juniqe.com.entity.UserEntity;
 import juniqe.com.model.DomainCode;
 import juniqe.com.model.ResponseDTO;
+//import juniqe.com.security.UserDetailsImpl;
 import juniqe.com.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,9 +24,11 @@ public class UserController extends  BaseController{
     // Lấy danh sách user có phân trang
     @GetMapping
     public ResponseEntity<Page<UserEntity>> getAllUsers(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+//        System.out.println(userDetails.getUser() + " -- user");
         Pageable pageable = PageRequest.of(page, size);
         return pageSuccess(userService.getAllUsers(pageable));
     }

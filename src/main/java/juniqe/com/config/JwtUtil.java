@@ -12,8 +12,8 @@ import java.util.Date;
 public class JwtUtil {
     private final String BASE64_SECRET_KEY = "lllll2C2rAlCj3y8Euf2rYqSFIuAowOZyI9SKuMk0gc="; // key cố định đã được encode
     private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(BASE64_SECRET_KEY));
-    private final long ACCESS_TOKEN_VALIDITY = 15 * 60 * 1000;
-    private final long REFRESH_TOKEN_VALIDITY = 24 * 60 * 60 * 1000;
+    private final long ACCESS_TOKEN_VALIDITY = 15* 60 * 1000;
+    private final long REFRESH_TOKEN_VALIDITY = 24 * 60 * 60 * 1000;  //24 * 60 * 60 * 1000;
 
     public String generateAccessToken(String username) {
         return Jwts.builder()

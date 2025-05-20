@@ -31,7 +31,7 @@ public class AuthController extends BaseController {
         UserEntity userinfo= userService.getUserByUsername(username);
         if(userinfo!=null  && userinfo.getId()!=null)
         {
-            if (userinfo != null && passwordEncoder.matches(password, userinfo.getPassword())) {
+            if (userinfo != null && passwordEncoder.matches(password, userinfo.getPassword()) && userinfo.getStatus()==1) {
                 String accessToken = jwtUtil.generateAccessToken(username);
                 String refreshToken = jwtUtil.generateRefreshToken(username);
 
@@ -39,7 +39,7 @@ public class AuthController extends BaseController {
                 ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                         .httpOnly(true)
                         .path("/api/auth/refresh")
-                        .maxAge(24 * 60 * 60)
+                        .maxAge(24 * 60 * 60)//24 * 60 * 60
                         .build();
                 response.addHeader("Set-Cookie", cookie.toString());
                 LoginDTO dto = LoginDTO.builder()

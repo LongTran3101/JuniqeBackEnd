@@ -57,6 +57,10 @@ public class UserEntity {
 
     @Column(name = "refresh_token", length = 500)
     private String refreshToken;
+    @Column(name = "status", length = 100) // 0 ngung hoat dong, 1 hoat dong, 2 delete
+    private Integer status;
+    @Column(name = "role", length = 100)  // admin  - admin.
+    private String role;
 
     @PrePersist
     protected void onCreate() {
