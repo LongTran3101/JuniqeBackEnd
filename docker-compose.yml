@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  juniqe-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: juniqe-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/juniqe?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ""
+    ports:
+      - "8080:8080"

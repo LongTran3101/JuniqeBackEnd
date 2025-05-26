@@ -21,6 +21,10 @@ public class AuthController extends BaseController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody UserEntity user){
+        return  success(userService.registerUser(user.getUsername(),user.getPassword(),user.getEmail()));
+    }
     // Demo login đơn giản, user/pass cố định
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> user, HttpServletResponse response) {
@@ -31,7 +35,7 @@ public class AuthController extends BaseController {
         UserEntity userinfo= userService.getUserByUsername(username);
         if(userinfo!=null  && userinfo.getId()!=null)
         {
-            if (userinfo != null && passwordEncoder.matches(password, userinfo.getPassword()) && userinfo.getStatus()==1) {
+            if (userinfo != null && passwordEncoder.matches(password, userinfo.getPassword()) && userinfo.getStatus()==1 && userinfo.getEnabled()) {
                 String accessToken = jwtUtil.generateAccessToken(username);
                 String refreshToken = jwtUtil.generateRefreshToken(username);
 

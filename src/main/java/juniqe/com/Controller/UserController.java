@@ -26,11 +26,13 @@ public class UserController extends  BaseController{
     public ResponseEntity<Page<UserEntity>> getAllUsers(
 //            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email
     ) {
 //        System.out.println(userDetails.getUser() + " -- user");
         Pageable pageable = PageRequest.of(page, size);
-        return pageSuccess(userService.getAllUsers(pageable));
+        return pageSuccess(userService.getAllUsers(pageable,username,email));
     }
 
     // Lấy user theo ID
@@ -55,7 +57,7 @@ public class UserController extends  BaseController{
     // Cập nhật user
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody UserEntity updatedUser) {
-        return success();
+        return success(userService.updateUser(id,updatedUser));
     }
 
     // Xóa user

@@ -16,8 +16,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Page<UserEntity> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<UserEntity> getAllUsers(Pageable pageable, String username, String email) {
+        // Nếu username hoặc email null, gán chuỗi rỗng để tìm all
+        String usernameFilter = (username == null) ? "" : username;
+        String emailFilter = (email == null) ? "" : email;
+        Page<UserEntity> usersPage = userRepository
+                .findByUsernameContainingIgnoreCaseAndEmailContainingIgnoreCase(usernameFilter, emailFilter, pageable);
+        // Set password về rỗng trước khi trả về
+        usersPage.getContent().forEach(user -> user.setPassword(""));
+        return usersPage;
     }
 
     @Override
@@ -39,23 +46,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity registerUser(String username, String password, String email) {
+        UserEntity user = new UserEntity();
+        user.setEnabled(false);
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setEmail(email);
+        user.setRole("user");
+        user.setStatus(1);
+        return userRepository.save(user);
+    }
+
+    @Override
     public UserEntity updateUser(Integer id, UserEntity user) {
         UserEntity existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-        existingUser.setUsername(user.getUsername());
-        existingUser.setEmail(user.getEmail());
-
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-
         existingUser.setEnabled(user.getEnabled());
-        existingUser.setCreatedBy(user.getCreatedBy());
         existingUser.setVipExpiredAt(user.getVipExpiredAt());
-        existingUser.setRefreshToken(user.getRefreshToken());
-        existingUser.setLastLogin(user.getLastLogin());
-
         return userRepository.save(existingUser);
     }
 
